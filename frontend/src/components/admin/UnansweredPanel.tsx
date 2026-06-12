@@ -1,9 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState, startTransition } from "react";
-import { CheckCircle2, HelpCircle, Loader2, RefreshCw } from "lucide-react";
+import { CheckCircle2, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { getUnanswered, resolveUnanswered, type UnansweredQuestion } from "@/lib/api";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -33,21 +32,19 @@ function QuestionRow({
   return (
     <div
       className={cn(
-        "flex items-start gap-3 px-4 py-3.5 rounded-xl border transition-all",
-        q.resolved
-          ? "border-emerald-200 bg-emerald-50/50 dark:bg-emerald-950/20 dark:border-emerald-800/50 opacity-60"
-          : "border-border bg-card hover:border-primary/30 hover:shadow-sm"
+        "flex items-start gap-3 px-4 py-2.5 transition-colors",
+        q.resolved ? "opacity-55" : "hover:bg-muted/30"
       )}
     >
-      <HelpCircle
+      <span
         className={cn(
-          "w-4 h-4 mt-0.5 shrink-0",
-          q.resolved ? "text-emerald-500" : "text-amber-500"
+          "mt-1.5 w-1.5 h-1.5 rounded-full shrink-0",
+          q.resolved ? "bg-primary/60" : "bg-amber-500/80"
         )}
       />
-      <div className="flex-1 min-w-0 space-y-1">
+      <div className="flex-1 min-w-0">
         <p className="text-sm leading-relaxed">{q.question}</p>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-[11px] text-muted-foreground tabular-nums mt-0.5">
           {new Date(q.created_at).toLocaleString("zh-TW", {
             year: "numeric",
             month: "2-digit",
@@ -59,13 +56,10 @@ function QuestionRow({
       </div>
       <div className="shrink-0">
         {q.resolved ? (
-          <Badge
-            variant="secondary"
-            className="text-xs gap-1 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
-          >
+          <span className="inline-flex items-center gap-1 rounded-full bg-primary/8 px-2 py-0.5 text-[11px] font-medium text-primary">
             <CheckCircle2 className="w-3 h-3" />
             已解決
-          </Badge>
+          </span>
         ) : (
           <Button
             size="sm"
@@ -124,52 +118,56 @@ export default function UnansweredPanel() {
         </Button>
       </div>
 
-      {/* Insight card */}
+      {/* Insight strip */}
       {pending.length > 0 && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50/60 dark:bg-amber-950/20 dark:border-amber-800/50 px-4 py-3">
-          <p className="text-sm text-amber-800 dark:text-amber-300 font-medium">
-            💡 有 {pending.length} 個問題待處理
+        <div className="rounded-lg border border-border bg-card px-4 py-3">
+          <p className="text-sm font-medium">
+            有 <span className="font-mono tabular-nums text-primary">{pending.length}</span> 個問題待處理
           </p>
-          <p className="text-xs text-amber-700/80 dark:text-amber-400/80 mt-0.5">
+          <p className="text-xs text-muted-foreground mt-0.5">
             針對這些問題補充相關文件，可以提升 DocWarden 的回答覆蓋率。
           </p>
         </div>
       )}
 
       {loading ? (
-        <div className="space-y-2">
+        <div className="rounded-lg border border-border divide-y divide-border overflow-hidden">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-16 rounded-xl bg-muted animate-pulse" />
+            <div key={i} className="h-14 bg-muted animate-pulse" />
           ))}
         </div>
       ) : questions.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 gap-3 text-center">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 flex items-center justify-center">
-            <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+        <div className="flex flex-col items-center justify-center py-16 gap-3 text-center rounded-lg border border-dashed border-border">
+          <div className="w-12 h-12 rounded-lg bg-primary/8 flex items-center justify-center">
+            <CheckCircle2 className="w-5 h-5 text-primary/70" />
           </div>
           <p className="text-sm font-medium text-muted-foreground">目前沒有未解問題</p>
-          <p className="text-xs text-muted-foreground/70">知識庫目前運作良好！</p>
+          <p className="text-xs text-muted-foreground/70">知識庫目前運作良好</p>
         </div>
       ) : (
         <div className="space-y-4">
           {pending.length > 0 && (
             <div className="space-y-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <p className="font-mono text-[11px] text-muted-foreground tracking-widest">
                 待處理 ({pending.length})
               </p>
-              {pending.map((q) => (
-                <QuestionRow key={q.id} q={q} onResolved={load} />
-              ))}
+              <div className="rounded-lg border border-border bg-card divide-y divide-border overflow-hidden">
+                {pending.map((q) => (
+                  <QuestionRow key={q.id} q={q} onResolved={load} />
+                ))}
+              </div>
             </div>
           )}
           {resolved.length > 0 && (
             <div className="space-y-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <p className="font-mono text-[11px] text-muted-foreground tracking-widest">
                 已解決 ({resolved.length})
               </p>
-              {resolved.map((q) => (
-                <QuestionRow key={q.id} q={q} onResolved={load} />
-              ))}
+              <div className="rounded-lg border border-border bg-card divide-y divide-border overflow-hidden">
+                {resolved.map((q) => (
+                  <QuestionRow key={q.id} q={q} onResolved={load} />
+                ))}
+              </div>
             </div>
           )}
         </div>

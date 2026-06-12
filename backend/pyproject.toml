@@ -1,6 +1,6 @@
 [project]
 name = "docwarden"
-version = "0.1.0"
+version = "1.1.0"
 description = "可嵌入網站、會誠實拒答的本地 agentic 知識庫機器人 — embeddable local-first KB bot that refuses to hallucinate"
 license = { text = "MIT" }
 readme = "README.md"

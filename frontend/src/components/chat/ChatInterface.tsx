@@ -29,29 +29,36 @@ function CitationCard({ citation }: { citation: Citation }) {
   const [open, setOpen] = useState(false);
   const pct = Math.round(citation.score * 100);
   return (
-    <div className="rounded-lg border border-border bg-muted/40 text-xs overflow-hidden">
+    <div className="rounded-md border border-trust/25 bg-card text-xs overflow-hidden">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-3 py-2 hover:bg-muted/60 transition-colors text-left gap-2"
+        className="w-full flex items-center justify-between px-2.5 py-1.5 hover:bg-trust/5 transition-colors text-left gap-2"
       >
         <span className="flex items-center gap-2 min-w-0">
+          <span className="font-mono text-[10px] font-medium text-trust bg-trust/10 border border-trust/20 rounded-sm px-1 py-px shrink-0">
+            {citation.ref}
+          </span>
           <span className="font-medium text-foreground truncate">{citation.doc_name}</span>
           <span className="text-muted-foreground truncate hidden sm:inline">· {citation.source_name}</span>
         </span>
-        <span className="flex items-center gap-2 shrink-0">
+        <span className="flex items-center gap-1.5 shrink-0">
           <span
             className={cn(
-              "font-mono font-semibold",
-              pct >= 80 ? "text-emerald-600" : pct >= 60 ? "text-amber-600" : "text-muted-foreground"
+              "font-mono tabular-nums",
+              pct >= 80 ? "text-trust" : pct >= 60 ? "text-amber-600" : "text-muted-foreground"
             )}
           >
             {pct}%
           </span>
-          {open ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+          {open ? (
+            <ChevronUp className="w-3 h-3 text-muted-foreground" />
+          ) : (
+            <ChevronDown className="w-3 h-3 text-muted-foreground" />
+          )}
         </span>
       </button>
       {open && (
-        <div className="px-3 pb-3 pt-1 border-t border-border/50">
+        <div className="px-2.5 pb-2.5 pt-1.5 border-t border-trust/15 bg-trust/5">
           <p className="text-muted-foreground leading-relaxed">{citation.text}</p>
         </div>
       )}
@@ -72,9 +79,9 @@ function StepItem({
     step.action === "search" ? (
       <Search className="w-3 h-3" />
     ) : step.action === "answer" ? (
-      <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+      <CheckCircle2 className="w-3 h-3 text-primary" />
     ) : (
-      <Shield className="w-3 h-3 text-sky-500" />
+      <Shield className="w-3 h-3 text-trust" />
     );
 
   return (
@@ -85,7 +92,7 @@ function StepItem({
           {step.action === "search" && (
             <span>
               <span className="font-medium text-foreground/70">查詢</span>{" "}
-              <span className="text-sky-600 dark:text-sky-400">{step.detail}</span>
+              <span className="text-trust">{step.detail}</span>
             </span>
           )}
           {step.action === "answer" && (
@@ -132,7 +139,7 @@ function AssistantMessage({
   if (msg.error) {
     return (
       <div className="flex gap-3 animate-fade-slide-in">
-        <div className="w-7 h-7 rounded-full bg-destructive/10 flex items-center justify-center shrink-0 mt-0.5">
+        <div className="w-7 h-7 rounded-lg bg-destructive/10 flex items-center justify-center shrink-0 mt-0.5">
           <XCircle className="w-4 h-4 text-destructive" />
         </div>
         <div className="flex-1 min-w-0">
@@ -147,8 +154,8 @@ function AssistantMessage({
   if (msg.streaming && !msg.result) {
     return (
       <div className="flex gap-3 animate-fade-slide-in">
-        <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-          <span className="text-xs font-bold text-primary">W</span>
+        <div className="w-7 h-7 rounded-lg bg-primary/10 ring-1 ring-primary/15 flex items-center justify-center shrink-0 mt-0.5">
+          <span className="font-heading text-xs font-bold text-primary">W</span>
         </div>
         <div className="flex-1 min-w-0 space-y-2">
           {steps.length > 0 && (
@@ -180,8 +187,8 @@ function AssistantMessage({
 
   return (
     <div className="flex gap-3 animate-fade-slide-in">
-      <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-        <span className="text-xs font-bold text-primary">W</span>
+      <div className="w-7 h-7 rounded-lg bg-primary/10 ring-1 ring-primary/15 flex items-center justify-center shrink-0 mt-0.5">
+        <span className="font-heading text-xs font-bold text-primary">W</span>
       </div>
       <div className="flex-1 min-w-0 space-y-2">
         {/* Steps summary toggle */}
@@ -202,25 +209,26 @@ function AssistantMessage({
           </div>
         )}
 
-        {/* Refused state */}
+        {/* Refused state — 信任時刻,沉穩不警示 */}
         {result.refused ? (
-          <div className="rounded-xl border border-sky-200 bg-sky-50 dark:bg-sky-950/30 dark:border-sky-800 px-4 py-3 space-y-2">
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0" />
-              <span className="text-sm font-semibold text-sky-700 dark:text-sky-300">
-                查無資料，誠實拒答
+          <div className="rounded-xl border border-trust/30 bg-card px-4 py-3.5 space-y-2">
+            <div className="flex items-center gap-2 pb-2 border-b border-border/60">
+              <Shield className="w-3.5 h-3.5 text-trust shrink-0" />
+              <span className="font-mono text-[11px] font-medium tracking-widest text-trust">
+                依據不足
               </span>
+              <span className="text-xs text-muted-foreground ml-auto">誠實拒答</span>
             </div>
-            <p className="text-sm text-sky-700/80 dark:text-sky-300/80 leading-relaxed">
+            <p className="text-sm text-foreground/85 leading-relaxed">
               {result.answer ||
                 "知識庫中沒有足夠的資料來回答此問題。我不會編造答案。"}
             </p>
-            <p className="text-xs text-sky-600/60 dark:text-sky-400/60">
+            <p className="text-xs text-muted-foreground">
               這個問題已記錄為「未解問題」，可前往後台補充相關文件。
             </p>
           </div>
         ) : (
-          <div className="rounded-xl bg-card border border-border/60 px-4 py-3">
+          <div className="rounded-xl bg-card ring-1 ring-foreground/10 px-4 py-3">
             <p className="text-sm leading-relaxed whitespace-pre-wrap">{result.answer}</p>
           </div>
         )}
@@ -228,7 +236,7 @@ function AssistantMessage({
         {/* Citations */}
         {result.citations.length > 0 && !result.refused && (
           <div className="space-y-1.5">
-            <p className="text-xs font-medium text-muted-foreground">引用來源</p>
+            <p className="font-mono text-[11px] tracking-widest text-trust/80">引用來源</p>
             {result.citations.map((c, i) => (
               <CitationCard key={i} citation={c} />
             ))}

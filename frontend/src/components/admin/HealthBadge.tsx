@@ -57,12 +57,12 @@ export default function HealthBadge() {
         variant="secondary"
         className={`gap-1.5 text-xs cursor-pointer transition-colors ${
           ok
-            ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800"
-            : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100 dark:bg-amber-950/40 dark:text-amber-400"
+            ? "bg-primary/8 text-primary border-primary/15 hover:bg-primary/12"
+            : "bg-amber-500/10 text-amber-700 border-amber-500/20 hover:bg-amber-500/15"
         }`}
       >
         <span
-          className={`w-1.5 h-1.5 rounded-full ${ok ? "bg-emerald-500 animate-pulse" : "bg-amber-500"}`}
+          className={`w-1.5 h-1.5 rounded-full ${ok ? "bg-primary animate-pulse" : "bg-amber-500"}`}
         />
         <Wifi className="w-3 h-3" />
         {ok ? `正常 · ${health.models.length} 個模型` : "Ollama 未就緒"}

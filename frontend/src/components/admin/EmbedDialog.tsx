@@ -41,8 +41,8 @@ export default function EmbedDialog() {
           <code className="text-xs bg-muted px-1 py-0.5 rounded">&lt;body&gt;</code>{" "}
           標籤內，即可顯示 DocWarden 聊天窗口。
         </p>
-        <div className="relative rounded-lg bg-muted/60 border border-border overflow-hidden">
-          <pre className="text-xs p-4 overflow-x-auto whitespace-pre-wrap break-all text-muted-foreground leading-relaxed">
+        <div className="relative rounded-md bg-muted/60 border border-border overflow-hidden">
+          <pre className="font-mono text-xs p-4 overflow-x-auto whitespace-pre-wrap break-all text-foreground/75 leading-relaxed">
             {SNIPPET}
           </pre>
           <Button
@@ -53,7 +53,7 @@ export default function EmbedDialog() {
           >
             {copied ? (
               <>
-                <Check className="w-3 h-3 text-emerald-500" />
+                <Check className="w-3 h-3 text-primary" />
                 已複製
               </>
             ) : (
