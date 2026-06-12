@@ -17,12 +17,64 @@
 - 🪄 一段 `<script>` 即可嵌入任意網站
 - 💸 Ollama 本地推理,零 API 費用,資料不外流
 
-## Roadmap
+![DocWarden Demo](docs/demo.gif)
 
-- [x] v0.1 agent 核心:structured-output 決策迴圈(search/answer/refuse)+ 來源路由 + 雙層拒答
-- [ ] v0.3 聊天 SSE + 管理後台 UI
-- [ ] v0.6 可嵌入 widget + 未解問題清單 UI
-- [ ] v1.0 Docker、demo、CI、release
+## 快速開始
+
+**前置需求**:[Docker](https://docs.docker.com/get-docker/) 與 [Ollama](https://ollama.com)。
+
+```bash
+# 1. 模型(一次性,約 6GB)
+ollama pull qwen2.5:7b && ollama pull bge-m3
+
+# 2. 一鍵啟動
+git clone https://github.com/yusyuan9224/docwarden.git && cd docwarden
+docker compose up --build
+```
+
+開啟 **http://localhost:3000**:建立知識來源 → 上傳文件(.pdf/.txt/.md)→ 在「測試對話」試問。
+要嵌入你的網站,點右上「嵌入程式碼」複製 iframe snippet 即可。
+
+<details>
+<summary>本機開發模式 / CLI</summary>
+
+```bash
+# 後端
+cd backend && uv sync
+uv run uvicorn docwarden.server:app --port 8000 --reload
+
+# 前端(另一個終端機)
+cd frontend && pnpm install && pnpm dev
+
+# 或純 CLI 試問(臨時建庫)
+cd backend && uv run docwarden ask "電池沒電怎麼辦?" --docs ../path/to/docs
+```
+
+</details>
+
+## 架構
+
+```mermaid
+flowchart LR
+    W[嵌入式 Widget<br/>iframe] -->|SSE| API
+    A[管理後台<br/>來源・文件・未解問題] --> API
+    subgraph API["FastAPI"]
+        AG[Agent 迴圈<br/>structured output 決策] --> KB[知識庫檢索<br/>來源路由]
+        AG --> RF[雙層拒答<br/>分數門檻+決策+引用檢查]
+    end
+    subgraph Local["100% 本地"]
+        O[Ollama qwen2.5:7b / bge-m3]
+        Q[(Qdrant)]
+        S[(SQLite)]
+    end
+    KB --> Q
+    AG <--> O
+    API --> S
+```
+
+agent 每一步輸出結構化決策(`thought` + `action`:search / answer / refuse),搜尋結果以【資料 N】編號回饋;
+最終回答必須引用編號,**無引用的回答會被自動駁回改為拒答**(防幻覺最後防線)。
+拒答的問題自動記入後台「未解問題」清單,告訴站長該補什麼文件。
 
 ## 技術備註(為什麼不用 LangGraph / tool calling)
 
