@@ -5,11 +5,13 @@
       "agent_type": "oh-my-claudecode:designer",
       "started_at": "2026-06-12T14:02:02.904Z",
       "parent_mode": "none",
-      "status": "running"
+      "status": "completed",
+      "completed_at": "2026-06-12T14:08:12.477Z",
+      "duration_ms": 369573
     }
   ],
   "total_spawned": 1,
-  "total_completed": 0,
+  "total_completed": 1,
   "total_failed": 0,
-  "last_updated": "2026-06-12T14:02:03.007Z"
+  "last_updated": "2026-06-12T14:08:12.581Z"
 }
