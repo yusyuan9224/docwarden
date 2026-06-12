@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cd \\\"/Users/yusyuanliu/Documents/program file/work/docwarden/frontend\\\" && pnpm dlx shadcn@latest add dialog badge tabs card separator scroll-area progress toast 2>&1\",\"timeout\":120000,\"de...",
+  "error": "Exit code 1\n\nThe toast component is deprecated. Use the sonner component instead.",
+  "timestamp": "2026-06-12T14:02:56.639Z",
+  "retry_count": 1
+}
